@@ -1,0 +1,40 @@
+---
+title: "main"
+author: "Mohan Wang"
+date: "`r Sys.Date()`"
+
+output: html_document
+
+fontsize: 11pt
+geometry: margin=1in
+
+header-includes: |
+  \usepackage{xcolor}
+  \usepackage{hyperref}
+  \hypersetup{
+    colorlinks=true,
+    linkcolor=black,       % Internal links (e.g., table of contents)
+    urlcolor=blue,         % External hyperlinks (change to your preferred color)
+    citecolor=red          % Citation links
+  }
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+# Import data and          
+
+
+```{r echo = FALSE}
+library(tidyverse)
+library(lubridate)
+
+CSV_path <- file.path("beijing+multi+site+air+quality+data\PRSA_Data_20130301-20170228", "PRSA_Data_Tiantan_20130301-20170228.csv")
+
+df <- read.csv(CSV_path)
+
+```
+
