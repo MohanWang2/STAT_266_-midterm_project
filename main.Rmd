@@ -1,45 +1,41 @@
 ---
-title: "main"
+title: "Midterm Project"
 author: "Mohan Wang"
 date: "`r Sys.Date()`"
-
-output: html_document
-
+output:
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+  - \usepackage{xeCJK}
+  - \setCJKmonofont[Scale=MatchLowercase]{SimSun}
+  - \setCJKmonofont[Scale=MatchLowercase]{SimSun}
 fontsize: 11pt
 geometry: margin=1in
-
-header-includes: |
-  \usepackage{xcolor}
-  \usepackage{hyperref}
-  \hypersetup{
-    colorlinks=true,
-    linkcolor=black,       % Internal links (e.g., table of contents)
-    urlcolor=blue,         % External hyperlinks (change to your preferred color)
-    citecolor=red          % Citation links
-  }
+CJKmainfont: "SimSun"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r echo = FALSE}
+```{r echo = FALSE, results='hide', message=FALSE}
 
 library(lubridate)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(rticles)
 ```
 
 \newpage
 
-# Data analysis         
+# Data analysis
 
 Huge amount of data with year, month, day, and hour.
 
 START 3.1 avery year
 
-```{r echo = TRUE}
+```{r echo = TRUE, warning = FALSE}
 
 
 data <- read.csv("PRSA_Data_Tiantan_20130301-20170228.csv")
@@ -89,7 +85,6 @@ daydata_2015 <- daydata %>%
 daydata_2016 <- daydata %>%
   filter(datetime >= start_2016, datetime <  end_2016)
 
-# 对 daily_pm25（同理，用 date 列）
 daily_pm25_2013 <- daily_pm25 %>%
   filter(date >= as_date(start_2013), date < as_date(end_2013))
 
@@ -145,9 +140,9 @@ ggplot(all_pm25, aes(x = date, y = pm25_daily, color = factor(year))) +
   scale_color_brewer(palette = "Set1", name = "Year") +
   scale_x_date(date_breaks = "3 months", date_labels = "%Y-%m") +
   labs(
-    title = "2013–2016 day average PM2.5",
-    x     = "day",
-    y     = "PM2.5 day average (μg/m³)"
+    title = "2013-2016 day average PM2.5",
+    x  = "day",
+    y  = "PM2.5 day average (ug/m3)"
   ) +
   theme_minimal() +
   theme(
@@ -158,7 +153,7 @@ ggplot(all_pm25, aes(x = date, y = pm25_daily, color = factor(year))) +
 
 # Daily average data comparison
 
-```{r echo=FALSE}
+```{r echo=FALSE, warning = FALSE}
 counts <- all_pm25 %>%
   group_by(year) %>%
   summarise(
@@ -182,9 +177,9 @@ ggplot(all_pm25, aes(x = factor(year), y = pm25_daily)) +
     size = 3
   ) +
   labs(
-    x     = "year",
-    y     = "PM2.5 day average (μg/m³)",
-    title = "2013–2016 PM2.5 day average boxplot"
+    x = "year",
+    y = "PM2.5 day average (ug/m3)",
+    title = "2013-2016 PM2.5 day average boxplot"
   ) +
   theme_minimal()
 
@@ -196,9 +191,9 @@ ggplot(all_pm10, aes(x=day, y=pm10_daily, color=factor(year))) +
   geom_line() +
   labs(
     x = "day",
-    y = "PM10 day average (μg/m³)",
+    y = "PM10 day average (ug/m3)",
     color = "year",
-    title = "2013–2016 PM10 day comparison（3/1→next year 3/1）"
+    title = "2013 to 2016 PM10 day comparison"
   ) +
   theme_minimal()
 
@@ -206,7 +201,7 @@ ggplot(daily_pm10, aes(x = factor(year), y = pm10_daily)) +
   geom_boxplot() +
   labs(
     x     = "Year",
-    y     = "Daily Avg PM10 (µg/m³)",
+    y     = "Daily Avg PM10 (ug/m3)",
     title = "Distribution of Daily Average PM10 by Year"
   ) +
   theme_minimal()
@@ -232,7 +227,7 @@ daily average value
 level 1  PM2.5 > 35  PM10 > 50
 level 2  PM2.5 > 75  PM10 > 150
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE}
 counts <- all_pm25 %>%
   group_by(year) %>%
   summarise(
@@ -249,8 +244,8 @@ ggplot(counts, aes(x=factor(year), y=days, fill=range)) +
   labs(
     x     = "year",
     y     = "day",
-    fill  = "PM2.5 (μg/m³)",
-    title = "2013–2016 PM2.5 day average 35–75 / >75 "
+    fill  = "PM2.5 (ug/m3)",
+    title = "2013-2016 PM2.5 day average 35-75 / >75 "
   ) +
   theme_minimal()
 
@@ -276,13 +271,13 @@ ggplot(counts_pm10, aes(x = factor(year), y = days, fill = category)) +
             size = 3) +
   scale_fill_manual(
     values = c("moderate" = "#66c2a5", "severe" = "#fc8d62"),
-    labels = c("50 < PM10 ≤ 150", "PM10 > 150")
+    labels = c("50 < PM10 <= 150", "PM10 > 150")
   ) +
   labs(
     x     = "year",
     y     = "day count",
     fill  = "PM10",
-    title = "2013–2016 PM10 over standar 50<PM10≤150 vs PM10>150"
+    title = "2013 - 2016 PM10 over standar 50<PM10<=150 vs PM10>150"
   ) +
   theme_minimal() +
   theme(
@@ -295,7 +290,7 @@ ggplot(counts_pm10, aes(x = factor(year), y = days, fill = category)) +
 
 # wind speed
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE}
 data_ws <- data %>%
   filter(!is.na(WSPM) & WSPM > 3)
 
@@ -320,9 +315,9 @@ ggplot(df_long, aes(x = datetime, y = Value, color = Variable)) +
   geom_line() +
   labs(
     x     = "time",
-    y     = "μg/m³",
+    y     = "ug/m3",
     color = "variable",
-    title = "wind speed、PM2.5 and PM10 follow by time（ WSPM > 3）"
+    title = "wind speed PM2.5 and PM10 follow by time ( WSPM > 3)"
   ) +
   theme_minimal() +
   theme(
@@ -335,11 +330,6 @@ corrs <- daydata_ws %>%
     cor_PM10 = cor(WSPM, PM10,   use = "complete.obs")
   )
 print(corrs)
-#> # A tibble: 1 × 2
-#>    cor_PM25 cor_PM10
-#>      <dbl>    <dbl>
-#> 1    -0.45    -0.38
-
 
 df_long <- daydata_ws %>%
   select(WSPM, `PM2.5`, PM10) %>%
@@ -351,7 +341,7 @@ ggplot(daydata_ws, aes(x = WSPM, y = `PM2.5`)) +
   geom_smooth(method = "loess", se = FALSE) +
   labs(
     x     = "wind speed (m/s)",
-    y     = "PM2.5 day average (μg/m³)",
+    y     = "PM2.5 day average (ug/m3)",
     title = "wind speed vs PM2.5"
   ) +
   theme_minimal()
@@ -362,7 +352,7 @@ ggplot(daydata_ws, aes(x = WSPM, y = PM10)) +
   geom_smooth(method = "loess", se = FALSE) +
   labs(
     x     = "wind speed (m/s)",
-    y     = "PM10 day average (μg/m³)",
+    y     = "PM10 day average (ug/m3)",
     title = "wind speed vs PM10"
   ) +
   theme_minimal()
